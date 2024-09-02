@@ -27,6 +27,11 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+// Cargar el autoload de Composer
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+    require_once __DIR__ . '/vendor/autoload.php';
+}
+
 /**
  * Currently plugin version.
  */
@@ -67,4 +72,5 @@ function run_lawgistics_test() {
 	// $plugin->run();
 
 }
-run_lawgistics_test();
+// run_lawgistics_test();
+add_action('plugins_loaded', 'run_lawgistics_test');
