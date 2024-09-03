@@ -28,7 +28,11 @@ Technical test
     - Navigate to Plugins > Add New.
     - Click on Upload Plugin and select the zip file you downloaded.
 
-3. Activate the Plugin:
+3. Install Dependencies:
+    - Before activating the plugin, open a terminal in the plugin directory.
+    - Run the command ```composer install``` to install the necessary dependencies.
+
+4. Activate the Plugin:
     - After uploading, click Activate to enable the plugin.
 
 ### Activation ###
