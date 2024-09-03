@@ -79,41 +79,70 @@ class lawgistics_test {
 
     public function register_pies_fields() {
         if ( function_exists('acf_add_local_field_group') ) {
-
-            $piesFields = new FieldsBuilder('pies');
-
-            $piesFields
-                ->addText('pie_type', [
-                    'label' => 'Pie Type',
-                    'instructions' => 'Enter the type of pie.',
-                    'required' => 1,
-                ])
-                ->addTextarea('description', [
-                    'label' => 'Description',
-                    'instructions' => 'Enter a description of the pie.',
-                    'required' => 1,
-                ])
-                ->addRepeater('ingredients', [
-                    'label' => 'Ingredients',
-                    'instructions' => 'Add the ingredients of the pie.',
-                    'min' => 1,
-                    'layout' => 'table',
-                    'button_label' => 'Add Ingredient',
-                ])
-                    ->addText('ingredient_name', [
-                        'label' => 'Ingredient Name',
+    
+            // Manual array works better here
+            $fields = array(
+                'key' => 'group_pies',
+                'title' => 'Pies',
+                'fields' => array(
+                    array(
+                        'key' => 'field_pie_type',
+                        'label' => 'Pie Type',
+                        'name' => 'pie_type',
+                        'type' => 'text',
+                        'instructions' => 'Enter the type of pie.',
                         'required' => 1,
-                    ])
-                    ->addNumber('ingredient_quantity', [
-                        'label' => 'Ingredient Quantity',
+                    ),
+                    array(
+                        'key' => 'field_description',
+                        'label' => 'Description',
+                        'name' => 'description',
+                        'type' => 'textarea',
+                        'instructions' => 'Enter a description of the pie.',
                         'required' => 1,
-                    ])
-                ->endRepeater();
-
-            acf_add_local_field_group($piesFields->build());
-            
+                    ),
+                    array(
+                        'key' => 'field_ingredients',
+                        'label' => 'Ingredients',
+                        'name' => 'ingredients',
+                        'type' => 'repeater',
+                        'instructions' => 'Add the ingredients of the pie.',
+                        'min' => 1,
+                        'layout' => 'table',
+                        'button_label' => 'Add Ingredient',
+                        'sub_fields' => array(
+                            array(
+                                'key' => 'field_ingredient_name',
+                                'label' => 'Ingredient Name',
+                                'name' => 'ingredient_name',
+                                'type' => 'text',
+                                'required' => 1,
+                            ),
+                            array(
+                                'key' => 'field_ingredient_quantity',
+                                'label' => 'Ingredient Quantity',
+                                'name' => 'ingredient_quantity',
+                                'type' => 'number',
+                                'required' => 1,
+                            ),
+                        ),
+                    ),
+                ),
+                'location' => array(
+                    array(
+                        array(
+                            'param' => 'post_type',
+                            'operator' => '==',
+                            'value' => 'pies',
+                        ),
+                    ),
+                ),
+            );
+    
+            acf_add_local_field_group($fields);
+        } else {
+            error_log('acf_add_local_field_group does not exist');
         }
-
     }
 
     public function register_custom_options_page() {
@@ -130,25 +159,47 @@ class lawgistics_test {
 
     public function register_custom_options_fields() {
         if ( function_exists('acf_add_local_field_group') ) {
-            $options_builder = new FieldsBuilder('custom_options');
 
-            $options_builder
-                ->addTab('Pies Settings', ['placement' => 'left'])
-                ->addRepeater('pies_settings', [
-                    'layout' => 'block',
-                    'label' => 'Pies Settings',
-                    'button_label' => 'Add Pie Setting',
-                ])
-                    ->addText('setting_name', [
-                        'label' => 'Setting Name',
-                    ])
-                    ->addText('setting_value', [
-                        'label' => 'Setting Value',
-                    ])
-                ->endRepeater()
-                ->setLocation('options_page', '==', 'acf-options-custom-options');
-
-            acf_add_local_field_group($options_builder->build());
+            // manual array here better
+            $fields = array(
+                'key' => 'group_custom_options',
+                'title' => 'Custom Options',
+                'fields' => array(
+                    array(
+                        'key' => 'field_pies_settings',
+                        'label' => 'Pies Settings',
+                        'name' => 'pies_settings',
+                        'type' => 'repeater',
+                        'layout' => 'block',
+                        'button_label' => 'Add Pie Setting',
+                        'sub_fields' => array(
+                            array(
+                                'key' => 'field_setting_name',
+                                'label' => 'Setting Name',
+                                'name' => 'setting_name',
+                                'type' => 'text',
+                            ),
+                            array(
+                                'key' => 'field_setting_value',
+                                'label' => 'Setting Value',
+                                'name' => 'setting_value',
+                                'type' => 'text',
+                            ),
+                        ),
+                    ),
+                ),
+                'location' => array(
+                    array(
+                        array(
+                            'param' => 'options_page',
+                            'operator' => '==',
+                            'value' => 'acf-options-custom-options',
+                        ),
+                    ),
+                ),
+            );
+    
+            acf_add_local_field_group($fields);
         }
     }
 
