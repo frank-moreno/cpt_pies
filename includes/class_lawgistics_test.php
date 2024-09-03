@@ -15,7 +15,7 @@ use StoutLogic\AcfBuilder\FieldsBuilder;
 
 
 //create a class for the plugin
-class lawgistics_test {
+class class_lawgistics_test {
 
     protected $version;
 
