@@ -151,28 +151,28 @@ class lawgistics_test {
         // Attr by default
         $atts = shortcode_atts(
             array(
-                'lookup' => '',       // Value to search for
-                'ingredients' => '',  // Comma separated list of ingredients
+                'lookup' => '',         
+                'ingredients' => '',    // Ingredients list separated by coma
+                'posts_per_page' => 3,
             ), 
             $atts, 
             'pies'
         );
     
-        // Reset the query
-        wp_reset_query();
+        // Get current page
+        $paged = isset($_GET['paged']) ? absint($_GET['paged']) : 1;
     
-        // Arguments for WP_Query
+        // Args for WP_Query
         $args = array(
             'post_type'              => array( 'pies' ),
             'post_status'            => array( 'publish' ),
-            'posts_per_page'         => '-1',
+            'posts_per_page'         => $atts['posts_per_page'],
+            'paged'                  => $paged,
             'order'                  => 'ASC',
         );
     
-        // Search filters by 'lookup' and 'ingredients'
         $meta_query = array('relation' => 'AND');
     
-        // If 'lookup' is present, add to query
         if (!empty($atts['lookup'])) {
             $meta_query[] = array(
                 'key'     => 'pie_type',
@@ -181,7 +181,6 @@ class lawgistics_test {
             );
         }
     
-        // If 'ingredients' is present, filter by ingredients
         if (!empty($atts['ingredients'])) {
             $ingredients_list = explode(',', $atts['ingredients']);
     
@@ -194,12 +193,11 @@ class lawgistics_test {
             }
         }
     
-        // Add meta_query if conditions were added
         if (count($meta_query) > 1) {
             $args['meta_query'] = $meta_query;
         }
     
-        // The Query
+        // The query
         $query = new WP_Query( $args );
     
         // The Loop
@@ -236,6 +234,19 @@ class lawgistics_test {
                             </div>';
             }
     
+            // Adding pagination
+            $pagination = paginate_links( array(
+                'base'      => add_query_arg('paged', '%#%'),
+                'format'  => '?paged=%#%',
+                'current' => max(1, $paged),
+                'total'   => $query->max_num_pages,
+                'prev_text' => __('« Prev'),
+                'next_text' => __('Next »'),
+                'type'    => 'list',
+            ) );
+    
+            $output .= '<div class="pagination">' . $pagination . '</div>';
+        
         } else {
             $output = '<p>No pies found.</p>';
         }
