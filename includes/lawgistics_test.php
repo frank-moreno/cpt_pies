@@ -29,6 +29,7 @@ class lawgistics_test {
 
         add_action( 'init', array( $this, 'register_pies_post_type' ) );
         add_action( 'acf/init', array( $this, 'register_pies_fields' ) );
+        add_action( 'init', array( $this, 'register_shortcodes' ) );
 
     }
 
@@ -139,6 +140,110 @@ class lawgistics_test {
         } else {
             error_log('acf_add_local_field_group does not exist');
         }
+    }
+
+    //SHORTCODE
+    public function register_shortcodes() {
+        add_shortcode( 'pies', array( $this, 'render_shortcode_pie' ) );
+    }
+
+    public function render_shortcode_pie($atts) {
+        // Attr by default
+        $atts = shortcode_atts(
+            array(
+                'lookup' => '',       // Value to search for
+                'ingredients' => '',  // Comma separated list of ingredients
+            ), 
+            $atts, 
+            'pies'
+        );
+    
+        // Reset the query
+        wp_reset_query();
+    
+        // Arguments for WP_Query
+        $args = array(
+            'post_type'              => array( 'pies' ),
+            'post_status'            => array( 'publish' ),
+            'posts_per_page'         => '-1',
+            'order'                  => 'ASC',
+        );
+    
+        // Search filters by 'lookup' and 'ingredients'
+        $meta_query = array('relation' => 'AND');
+    
+        // If 'lookup' is present, add to query
+        if (!empty($atts['lookup'])) {
+            $meta_query[] = array(
+                'key'     => 'pie_type',
+                'value'   => $atts['lookup'],
+                'compare' => 'LIKE',
+            );
+        }
+    
+        // If 'ingredients' is present, filter by ingredients
+        if (!empty($atts['ingredients'])) {
+            $ingredients_list = explode(',', $atts['ingredients']);
+    
+            foreach ($ingredients_list as $ingredient) {
+                $meta_query[] = array(
+                    'key'     => 'ingredients',
+                    'value'   => trim($ingredient),
+                    'compare' => 'LIKE',
+                );
+            }
+        }
+    
+        // Add meta_query if conditions were added
+        if (count($meta_query) > 1) {
+            $args['meta_query'] = $meta_query;
+        }
+    
+        // The Query
+        $query = new WP_Query( $args );
+    
+        // The Loop
+        if ( $query->have_posts() ) {
+            $output = '';
+    
+            while ( $query->have_posts() ) {
+                $query->the_post();
+    
+                $pie_type = get_field('pie_type');
+                $description = get_field('description');
+                $ingredients = get_field('ingredients');
+    
+                $ingredients_list_html = '<ul>';
+                if (!empty($ingredients)) {
+                    foreach ($ingredients as $ingredient) {
+                        $ingredients_list_html .= '<li>' . esc_html($ingredient['ingredient_name']) . ': ' . esc_html($ingredient['ingredient_quantity']) . '</li>';
+                    }
+                }
+                $ingredients_list_html .= '</ul>';
+    
+                // HTML output
+                $output .= '<div class="card">
+                                <div class="card-body">
+                                    <div class="project-item__content">
+                                        <h3 class="project-item__title">' . get_the_title() . '</h3>
+                                        <div class="project-item__meta">
+                                            <strong>Pie Type:</strong> ' . esc_html($pie_type) . '<br>
+                                            <strong>Description:</strong> ' . esc_html($description) . '<br>
+                                            <strong>Ingredients:</strong> ' . $ingredients_list_html . '
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>';
+            }
+    
+        } else {
+            $output = '<p>No pies found.</p>';
+        }
+    
+        // Restore original Post Data
+        wp_reset_postdata();
+    
+        return $output;
     }
 
 }
