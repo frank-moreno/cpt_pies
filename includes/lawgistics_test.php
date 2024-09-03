@@ -30,10 +30,6 @@ class lawgistics_test {
         add_action( 'init', array( $this, 'register_pies_post_type' ) );
         add_action( 'acf/init', array( $this, 'register_pies_fields' ) );
 
-        add_action( 'acf/init', array( $this, 'register_custom_options_page' ) );
-
-        add_action( 'acf/init', array( $this, 'register_custom_options_fields' ) );
-
     }
 
     public function get_version() {
@@ -142,64 +138,6 @@ class lawgistics_test {
             acf_add_local_field_group($fields);
         } else {
             error_log('acf_add_local_field_group does not exist');
-        }
-    }
-
-    public function register_custom_options_page() {
-        if ( function_exists('acf_add_options_page') ) {
-            acf_add_options_page(array(
-                'page_title'    => 'Custom Options',
-                'menu_title'    => 'Custom Options',
-                'menu_slug'     => 'custom-options',
-                'capability'    => 'edit_posts',
-                'redirect'      => false
-            ));
-        }
-    }
-
-    public function register_custom_options_fields() {
-        if ( function_exists('acf_add_local_field_group') ) {
-
-            // manual array here better
-            $fields = array(
-                'key' => 'group_custom_options',
-                'title' => 'Custom Options',
-                'fields' => array(
-                    array(
-                        'key' => 'field_pies_settings',
-                        'label' => 'Pies Settings',
-                        'name' => 'pies_settings',
-                        'type' => 'repeater',
-                        'layout' => 'block',
-                        'button_label' => 'Add Pie Setting',
-                        'sub_fields' => array(
-                            array(
-                                'key' => 'field_setting_name',
-                                'label' => 'Setting Name',
-                                'name' => 'setting_name',
-                                'type' => 'text',
-                            ),
-                            array(
-                                'key' => 'field_setting_value',
-                                'label' => 'Setting Value',
-                                'name' => 'setting_value',
-                                'type' => 'text',
-                            ),
-                        ),
-                    ),
-                ),
-                'location' => array(
-                    array(
-                        array(
-                            'param' => 'options_page',
-                            'operator' => '==',
-                            'value' => 'acf-options-custom-options',
-                        ),
-                    ),
-                ),
-            );
-    
-            acf_add_local_field_group($fields);
         }
     }
 
