@@ -5,7 +5,7 @@ Simulated Technical Test for WordPress Developer
 ### What is this repository for? ###
 This repository was created as a simulated technical test for a WordPress Developer role. The goal is to demonstrate my skills in developing custom WordPress functionality, adhering to best practices and leveraging Object-Oriented Programming (OOP) principles.
 
-* Version: dev [1.0.0]
+* Version: dev [1.0.1]
 
 ### What features/tasks have been developed? ###
 
