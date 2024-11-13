@@ -1,9 +1,9 @@
-# lawgistics_test
-Technical test for Wordpress Developer at Lawgistics Ltd (https://www.lawgistics.co.uk/)
+# cpt pies
+Simulated Technical Test for WordPress Developer
 
 
 ### What is this repository for? ###
-Technical test
+This repository was created as a simulated technical test for a WordPress Developer role. The goal is to demonstrate my skills in developing custom WordPress functionality, adhering to best practices and leveraging Object-Oriented Programming (OOP) principles.
 
 * Version: dev [1.0.0]
 
